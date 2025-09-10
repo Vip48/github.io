@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOLE - 让每个人都拥有奢华</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.4;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Page Management */
+        .page {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 0;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: 2px;
+            cursor: pointer;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .nav-menu li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .nav-menu li a:hover {
+            color: #cccccc;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-actions a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 16px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-actions .login-btn {
+            border-color: #ffffff;
+        }
+
+        .nav-actions .login-btn:hover {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .cart-icon {
+            position: relative;
+            font-size: 18px;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Common Styles */
+        .btn {
+            padding: 16px 40px;
+            border: none;
+            border-radius: 0;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .btn-primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+        }
+
+        .btn-secondary:hover {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* HOME PAGE */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+
+        .hero-title {
+            font-size: clamp(48px, 8vw, 120px);
+            font-weight: 700;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(24px, 4vw, 48px);
+            font-weight: 200;
+            margin-bottom: 32px;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.2s both;
+            letter-spacing: -1px;
+        }
+
+        /* Value Proposition Styles */
+        .value-section {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .value-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+        }
+
+        /* Psychology Elements */
+        .psychology-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 60px 40px;
+            text-align: center;
+            transition: all 0.5s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .psychology-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 30px 60px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .psychology-card {
+                padding: 40px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="showPage('home')">SOLE</div>
+            <ul class="nav-menu">
+                <li><a onclick="showPage('platform')">平台优势</a></li>
+                <li><a onclick="showPage('collections')">精选商品</a></li>
+                <li><a onclick="showPage('membership')">会员计划</a></li>
+                <li><a onclick="showPage('about')">关于我们</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a onclick="showPage('login')" class="login-btn">登录</a>
+                <a onclick="showPage('cart')" class="cart-icon">
+                    🛍️
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HOME PAGE -->
+    <div id="home" class="page active">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">SOLE</h1>
+                <h2 class="hero-subtitle">让每个人都拥有奢华</h2>
+                <p style="font-size: 20px; font-weight: 300; margin-bottom: 48px; opacity: 0.8; max-width: 700px; margin-left: auto; margin-right: auto; animation: fadeInUp 1s ease-out 0.4s both; line-height: 1.6;">不再是少数人的专属，我们让真正的高品质触手可及。用最合理的价格，获得最超值的体验。</p>
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; animation: fadeInUp 1s ease-out 0.6s both;">
+                    <a href="#" class="btn btn-primary" onclick="showPage('collections')">开始体验</a>
+                    <a href="#" class="btn btn-secondary" onclick="showPage('platform')">了解平台</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Value Proposition -->
+        <section class="value-section" style="padding: 160px 0; position: relative;">
+            <div class="container" style="position: relative; z-index: 2;">
+                <div style="text-align: center; margin-bottom: 120px;">
+                    <div style="font-size: 14px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.6; margin-bottom: 24px; color: #888;">CORE VALUE</div>
+                    <h2 style="font-size: 64px; font-weight: 200; letter-spacing: -2px; margin-bottom: 40px;">小钱 · 大事</h2>
+                    <p style="font-size: 20px; font-weight: 300; opacity: 0.8; max-width: 600px; margin: 0 auto; line-height: 1.7;">我们重新定义了价值。不是让你花更多钱，而是让你的每一分钱都物超所值。</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; margin-bottom: 120px;">
+                    <div class="psychology-card">
+                        <div style="font-size: 64px; margin-bottom: 32px; animation: float 3s ease-in-out infinite;">💎</div>
+                        <h3 style="font-size: 28px; font-weight: 400; margin-bottom: 24px; letter-spacing: -0.5px;">奢华触手可及</h3>
+                        <p style="font-size: 16px; opacity: 0.8; line-height: 1.7; margin-bottom: 24px;">原价数万的顶级体验，现在只需要几千元。我们让奢华不再遥不可及。</p>
+                        <div style="font-size: 24px; font-weight: 600; color: #4ade80;">节省高达80%</div>
+                    </div>
+
+                    <div class="psychology-card">
+                        <div style="font-size: 64px; margin-bottom: 32px; animation: float 3s ease-in-out infinite 0.5s;">🎯</div>
+                        <h3 style="font-size: 28px; font-weight: 400; margin-bottom: 24px; letter-spacing: -0.5px;">精准匹配需求</h3>
+                        <p style="font-size: 16px; opacity: 0.8; line-height: 1.7; margin-bottom: 24px;">不是所有奢侈品都适合你。我们用智能算法为你找到最匹配的高端产品。</p>
+                        <div style="font-size: 24px; font-weight: 600; color: #60a5fa;">98%满意度</div>
+                    </div>
+
+                    <div class="psychology-card">
+                        <div style="font-size: 64px; margin-bottom: 32px; animation: float 3s ease-in-out infinite 1s;">✨</div>
+                        <h3 style="font-size: 28px; font-weight: 400; margin-bottom: 24px; letter-spacing: -0.5px;">身份的升华</h3>
+                        <p style="font-size: 16px; opacity: 0.8; line-height: 1.7; margin-bottom: 24px;">穿上它的瞬间，你就是那个更好的自己。品质改变气质，气质改变命运。</p>
+                        <div style="font-size: 24px; font-weight: 600; color: #f59e0b;">即刻蜕变</div>
+                    </div>
+                </div>
+
+                <!-- Social Proof -->
+                <div style="text-align: center; padding: 80px 0; background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 100%); border-radius: 24px; margin-bottom: 100px;">
+                    <h3 style="font-size: 36px; font-weight: 300; margin-bottom: 48px; letter-spacing: -1px;">已有126,847位用户选择了SOLE</h3>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 60px; max-width: 800px; margin: 0 auto;">
+                        <div>
+                            <div style="font-size: 36px; font-weight: 600; margin-bottom: 8px; color: #4ade80;">4.9/5</div>
+                            <div style="font-size: 14px; opacity: 0.7;">用户评分</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 36px; font-weight: 600; margin-bottom: 8px; color: #60a5fa;">24h</div>
+                            <div style="font-size: 14px; opacity: 0.7;">闪电发货</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 36px; font-weight: 600; margin-bottom: 8px; color: #f59e0b;">365天</div>
+                            <div style="font-size: 14px; opacity: 0.7;">品质保证</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 36px; font-weight: 600; margin-bottom: 8px; color: #ef4444;">0元</div>
+                            <div style="font-size: 14px; opacity: 0.7;">退换费用</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Psychological Triggers -->
+        <section style="padding: 160px 0; background: #000000;">
+            <div class="container">
+                <div style="text-align: center; margin-bottom: 120px;">
+                    <h2 style="font-size: 56px; font-weight: 200; line-height: 1.2; margin-bottom: 40px; letter-spacing: -1px;">你值得拥有<br>更好的生活</h2>
+                    <p style="font-size: 20px; font-weight: 300; opacity: 0.8; max-width: 600px; margin: 0 auto; line-height: 1.7;">不要让预算限制了你的梦想。真正的投资是投资自己，投资那个更自信的你。</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 120px; align-items: center; margin-bottom: 120px;">
+                    <div>
+                        <h3 style="font-size: 48px; font-weight: 300; margin-bottom: 32px; letter-spacing: -1px;">从今天开始<br>改变你的形象</h3>
+                        <p style="font-size: 18px; opacity: 0.8; line-height: 1.7; margin-bottom: 32px;">研究显示，穿着高品质鞋履的人在商务谈判中成功率提高43%，在社交场合更容易获得他人认可。</p>
+                        <div style="display: flex; align-items: center; gap: 32px; margin-bottom: 48px;">
+                            <div>
+                                <div style="font-size: 32px; font-weight: 600; color: #4ade80; margin-bottom: 8px;">+43%</div>
+                                <div style="font-size: 14px; opacity: 0.7;">成功率提升</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 32px; font-weight: 600; color: #60a5fa; margin-bottom: 8px;">+67%</div>
+                                <div style="font-size: 14px; opacity: 0.7;">自信度提升</div>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-primary" onclick="showPage('collections')">立即体验</a>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 120px; animation: float 4s ease-in-out infinite;">👑</div>
+                    </div>
+                </div>
+
+                <!-- Urgency & Scarcity -->
+                <div style="background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); border-radius: 24px; padding: 80px 60px; text-align: center; position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: 0; right: 0; background: #ef4444; color: white; padding: 12px 24px; border-radius: 0 24px 0 24px; font-size: 14px; font-weight: 600;">限时优惠</div>
+                    <h3 style="font-size: 40px; font-weight: 300; margin-bottom: 24px; letter-spacing: -1px;">前1000名用户</h3>
+                    <p style="font-size: 20px; opacity: 0.8; margin-bottom: 40px;">享受首月8折特惠 + 免费升级VIP会员</p>
+                    <div style="display: flex; justify-content: center; gap: 24px; margin-bottom: 40px;">
+                        <div style="background: rgba(239, 68, 68, 0.2); padding: 16px 24px; border-radius: 12px;">
+                            <div style="font-size: 24px; font-weight: 600; color: #ef4444;">剩余</div>
+                            <div style="font-size: 32px; font-weight: 700; color: #ef4444;">347</div>
+                            <div style="font-size: 14px; opacity: 0.8;">个名额</div>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-primary" onclick="showPage('membership')">立即抢购</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- PLATFORM PAGE -->
+    <div id="platform" class="page">
+        <div style="padding-top: 80px; min-height: 100vh; background: #000000;">
+            <div style="text-align: center; padding: 120px 0 80px; background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);">
+                <h1 style="font-size: 72px; font-weight: 700; margin-bottom: 24px; letter-spacing: -2px;">平台优势</h1>
+                <p style="font-size: 20px; font-weight: 300; opacity: 0.8; max-width: 600px; margin: 0 auto;">我们如何让你花小钱办大事</p>
+            </div>
+
+            <div class="container">
+                <div style="padding: 100px 0;">
+                    <!-- Platform Benefits -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-bottom: 120px; align-items: center;">
+                        <div>
+                            <h3 style="font-size: 48px; font-weight: 300; margin-bottom: 32px; letter-spacing: -1px;">直接对接<br>顶级供应商</h3>
+                            <p style="font-size: 18px; opacity: 0.8; line-height: 1.7; margin-bottom: 32px;">我们跳过所有中间商，直接与顶级制造商合作。省去的每一个环节，都是为你节省的成本。</p>
+                            <div style="display: flex; flex-direction: column; gap: 16px;">
+                                <div style="display: flex; align-items: center; gap: 16px;">
+                                    <div style="width: 8px; height: 8px; background: #4ade80; border-radius: 50%;"></div>
+                                    <span style="opacity: 0.9;">去除品牌溢价，节省60%成本</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 16px;">
+                                    <div style="width: 8px; height: 8px; background: #4ade80; border-radius: 50%;"></div>
+                                    <span style="opacity: 0.9;">严格质检，确保品质标准</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 16px;">
+                                    <div style="width: 8px; height: 8px; background: #4ade80; border-radius: 50%;"></div>
+                                    <span style="opacity: 0.9;">限量精选，拒绝平庸</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); border-radius: 20px; padding: 60px; font-size: 100px;">🏭</div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-bottom: 120px; align-items: center;">
+                        <div style="text-align: center;">
+                            <div style="background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); border-radius: 20px; padding: 60px; font-size: 100px;">🎯</div>
+                        </div>
+                        <div>
+                            <h3 style="font-size: 48px; font-weight: 300; margin-bottom: 32px; letter-spacing: -1px;">AI智能<br>个性推荐</h3>
+                            <p style="font-size: 18px; opacity: 0.8; line-height: 1.7; margin-bottom: 32px;">不盲目追求品牌，只为你推荐真正适合的产品。我们的AI系统分析你的需求、预算和风格，精准匹配最佳选择。</p>
+                            <div style="background: rgba(96, 165, 250, 0.1); padding: 24px; border-radius: 12px; border: 1px solid rgba(96, 165, 250, 0.2);">
+                                <div style="font-size: 20px; font-weight: 600; color: #60a5fa; margin-bottom: 8px;">个性化匹配度</div>
+                                <div style="font-size: 32px; font-weight: 700; color: #60a5fa;">96.8%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- COLLECTIONS PAGE -->
+    <div id="collections" class="page">
+        <div style="padding-top: 80px; min-height: 100vh; background: #000000;">
+            <div style="text-align: center; padding: 120px 0 80px; background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);">
+                <h1 style="font-size: 72px; font-weight: 700; margin-bottom: 24px; letter-spacing: -2px;">精选商品</h1>
+                <p style="font-size: 20px; font-weight: 300; opacity: 0.8; max-width: 600px; margin: 0 auto;">每一款都经过严格筛选，只为给你最超值的选择</p>
+            </div>
+
+            <div class="container">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 40px; margin: 80px 0;">
+                    <div style="position: relative; background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); border-radius: 24px; overflow: hidden; cursor: pointer; transition: all 0.5s ease;" onclick="alert('产品详情')">
+                        <div style="padding: 40px 40px 20px; text-align: center;">
+                            <div style="font-size: 80px; margin-bottom: 24px;">👟</div>
+                            <h3 style="font-size: 24px; font-weight: 600; margin-bottom: 12px;">轻奢运动系列</h3>
+                            <p style="opacity: 0.7; margin-bottom: 24px; font-size: 14px;">原价￥8,999，限时特惠</p>
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 24px;">
+                                <span style="font-size: 28px; font-weight: 700; color: #4ade80;">¥1,899</span>
+                                <span style="font-size: 16px; opacity: 0.6; text-decoration: line-through;">¥8,999</span>
+                            </div>
+                            <div style="background: rgba(74, 222, 128, 0.2); padding: 8px 16px; border-radius: 20px; display: inline-block; margin-bottom: 24px;">
+                                <span style="font-size: 12px; color: #4ade80; font-weight: 600;">节省 ¥7,100</span>
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%;">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div style="position: relative; background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); border-radius: 24px; overflow: hidden; cursor: pointer; transition: all 0.5s ease;" onclick="alert('产品详情')">
+                        <div style="padding: 40px 40px 20px; text-align: center;">
+                            <div style="font-size: 80px; margin-bottom: 24px;">👞</div>
+                            <h3 style="font-size: 24px; font-weight: 600; margin-bottom: 12px;">商务精英系列</h3>
+                            <p style="opacity: 0.7; margin-bottom: 24px; font-size: 14px;">原价￥12,999，限时特惠</p>
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 24px;">
+                                <span style="font-size: 28px; font-weight: 700; color: #4ade80;">¥2,599</span>
+                                <span style="font-size: 16px; opacity: 0.6; text-decoration: line-through;">¥12,999</span>
+                            </div>
+                            <div style="background: rgba(74, 222, 128, 0.2); padding: 8px 16px; border-radius: 20px; display: inline-block; margin-bottom: 24px;">
